@@ -7,6 +7,8 @@ example_modulo = 15
 example_triangular_num_list = [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105]
 example_modulo_list = [0, 1, 3, 6, 10, 13, 15]
 example_prague_clock = [1, 2, 3, 4, 3, 2]
+example_demo_hour = 6
+example_demo = [[1], [2], [3], [4], [3, 2], [1, 2, 3]]
 
 class prague_clock_tests(unittest.TestCase):
     def test001_triangular_num_list(self):
@@ -43,6 +45,12 @@ class prague_clock_tests(unittest.TestCase):
         with self.assertRaises(UserWarning) as e:
 #             with warnings.simplefilter('error'):
                 pc.prague_clock(**{'modulo' : example_modulo, 'num_list' : example_modulo_list})
+
+    def test007_demo(self):
+        self.assertEqual(
+            example_demo,
+            pc.demo(example_demo_hour, example_prague_clock)
+        )
 
 if __name__ == '__main__':
         pdb.set_trace()
