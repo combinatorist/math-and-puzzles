@@ -6,7 +6,7 @@ import warnings
 example_modulo = 15
 example_triangular_num_list = [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105]
 example_modulo_list = [0, 1, 3, 6, 10, 13, 15]
-example_sorted_list_diff = [1, 2, 3, 4, 3, 2]
+example_prague_clock = [1, 2, 3, 4, 3, 2]
 
 class prague_clock_tests(unittest.TestCase):
     def test001_triangular_num_list(self):
@@ -27,22 +27,22 @@ class prague_clock_tests(unittest.TestCase):
             pc.modulo_list(example_modulo, example_triangular_num_list)
         )
 
-    def test004_sorted_list_diff(self):
+    def test004_prague_clock(self):
         self.assertEqual(
-            example_sorted_list_diff,
-            pc.sorted_list_diff(num_list=example_modulo_list)
+            example_prague_clock,
+            pc.prague_clock(num_list=example_modulo_list)
         )
 
-    def test005_sorted_list_end_to_end(self):
+    def test005_prague_clock_end_to_end(self):
         self.assertEqual(
-            example_sorted_list_diff,
-            pc.sorted_list_diff(example_modulo)
+            example_prague_clock,
+            pc.prague_clock(example_modulo)
         )
 
-    def test006_sorted_list_warning(self):
+    def test006_prague_clock_warning(self):
         with self.assertRaises(UserWarning) as e:
 #             with warnings.simplefilter('error'):
-                pc.sorted_list_diff(**{'modulo' : example_modulo, 'num_list' : example_modulo_list})
+                pc.prague_clock(**{'modulo' : example_modulo, 'num_list' : example_modulo_list})
 
 if __name__ == '__main__':
         pdb.set_trace()

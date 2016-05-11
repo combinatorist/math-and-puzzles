@@ -35,7 +35,7 @@ def modulo_list(modulo, num_list=None, append_m=True):
     return num_list
 
 
-def sorted_list_diff(modulo=None, num_list=None):
+def prague_clock(modulo=None, num_list=None):
     """
     sorts and calculates differences given a modulo
     """
@@ -48,6 +48,3 @@ def sorted_list_diff(modulo=None, num_list=None):
     for i in range(1, len(num_list)):
         diff_list.append(num_list[i] - num_list[i - 1])
     return diff_list
-
-
-        
