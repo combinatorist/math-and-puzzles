@@ -52,6 +52,12 @@ class prague_clock_tests(unittest.TestCase):
             pc.demo(example_demo_hour, example_prague_clock)
         )
 
+    def test008_demo_error(self):
+        self.assertEqual(
+            example_demo,
+            pc.demo(example_demo_hour, [1, 2, 3, 4, 3])
+        )
+
 if __name__ == '__main__':
         pdb.set_trace()
         unittest.main()
