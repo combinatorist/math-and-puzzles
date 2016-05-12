@@ -57,6 +57,8 @@ def demo(hour, prague_clock, modulo=None, show_all=True):
     demonstrates a number based on a prague clock"
     """
     if modulo is None:
+        if prague_clock is None:
+            warnings.warn("demo arguments modulo and prague_clock can't both be None")
         modulo = sum(prague_clock)
 
     prague_clock = cycle(prague_clock)
