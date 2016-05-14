@@ -23,7 +23,8 @@ def triangular_num_list(n):
         num_list.append(cumulative)
     return num_list
 
-
+# Theorem 1
+## step (1)
 def modulo_list(modulo, num_list=None, append_m=True):
     """
     reduces the first modulo-1 triangular numbers mod modulo
@@ -35,7 +36,7 @@ def modulo_list(modulo, num_list=None, append_m=True):
         num_list.append(modulo)
     return num_list
 
-
+## step 2 (also calls step 1)
 def prague_clock(modulo=None, num_list=None):
     """
     sorts and calculates differences given a modulo
