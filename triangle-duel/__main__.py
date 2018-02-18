@@ -6,11 +6,14 @@ p = {
     "ca": a([F(1, 2), 0, F(1, 2)]),
     "bc": a([0, F(8, 9), F(1, 9)]),
     "cb": a([0, F(4, 9), F(5, 9)]),
+    # a always hits target: b, regardless of order
     "a": ((F(1), "ca"),),
+    # b always shoots at a
     "bac": ((F(4, 5), "cb"), (F(1, 5), "a")),
-    "cab": ((F(1, 2), "bc"), (F(1, 2), "a")),
     "bca": ((F(4, 5), "cb"), (F(1, 5), "cab")),
-    "cba": ((F(1, 2), "bc"), (F(1, 2), "bac")),
+    # c always shoots into air, hitting no-one
+    "cab": ((F(1), "a"),),
+    "cba": ((F(1), "bac"),),
     "start": (
         (F(1, 3), "a"),
         (F(1, 6), "bac"),
