@@ -6,7 +6,7 @@ p = {
     "ca": a([F(1, 2), 0, F(1, 2)]),
     "bc": a([0, F(8, 9), F(1, 9)]),
     "cb": a([0, F(4, 9), F(5, 9)]),
-    "a": "ca",
+    "a": ((F(1), "ca"),),
     "bac": ((F(4, 5), "cb"), (F(1, 5), "a")),
     "cab": ((F(1, 2), "bc"), (F(1, 2), "a")),
     "bca": ((F(4, 5), "cb"), (F(1, 5), "cab")),
@@ -26,8 +26,6 @@ def compute(entry_point_ref):
     entry_point = p[entry_point_ref]
     if isinstance(entry_point, np.ndarray):
         return entry_point
-    elif isinstance(entry_point, str):
-        return p[entry_point]
     else:
         results = [compute(pair[1]) * pair[0] for pair in entry_point]
 
