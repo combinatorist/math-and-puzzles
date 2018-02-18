@@ -42,3 +42,4 @@ compute("a")
 compute("bac")
 print compute("start")
 print [float(x) for x in compute("start")]
+assert compute("start").sum() == 1
