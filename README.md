@@ -1,4 +1,4 @@
-# mathematical-intelligencer
-Mathmatical curiosities inspired by the journal "The Mathematical Inteligencer".
-
-http://www.springer.com/mathematics/journal/283
+# math-and-puzzles
+Mathematical curiosities, proofs, and puzzles inspired by:
+- ["The Mathematical Intelligencer"](http://www.springer.com/mathematics/journal/283)
+- Martin Gardner
