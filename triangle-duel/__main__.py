@@ -44,15 +44,17 @@ p = {
     "bc": a([0, b_vs_c[0], F(1) - b_vs_c[0]]),
     "cb": a([0, F(1) - c_vs_b[0], c_vs_b[0]]),
     # a always hits target: b, regardless of order
-    "a": ((F(1), "ca"),),
+    "abc": ((F(1), "ca"),),
+    "acb": ((F(1), "ca"),),
     # b always shoots at a
-    "bac": ((F(4, 5), "cb"), (F(1, 5), "a")),
+    "bac": ((F(4, 5), "cb"), (F(1, 5), "acb")),
     "bca": ((F(4, 5), "cb"), (F(1, 5), "cab")),
     # c always shoots into air, hitting no-one
-    "cab": ((F(1), "a"),),
+    "cab": ((F(1), "abc"),),
     "cba": ((F(1), "bac"),),
     "start": (
-        (F(1, 3), "a"),
+        (F(1, 6), "abc"),
+        (F(1, 6), "acb"),
         (F(1, 6), "bac"),
         (F(1, 6), "cab"),
         (F(1, 6), "bca"),
@@ -75,7 +77,7 @@ def compute(entry_point_ref):
 compute("ca")
 compute("bc")
 compute("cb")
-compute("a")
+compute("abc")
 compute("bac")
 print compute("start")
 print [float(x) for x in compute("start")]
