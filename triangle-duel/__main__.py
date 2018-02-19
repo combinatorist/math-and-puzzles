@@ -2,10 +2,30 @@ from fractions import Fraction as F
 from numpy import array as a
 import numpy as np
 
+players = {
+    'a': F(1),
+    'b': F(4, 5),
+    'c': F(1, 2),
+}
+
+def infinite_duels(a_accuracy, b_accuracy):
+    """defines probability of survival for 'a' given their's and b's accuracy
+    If neither person has perfect accuracy the duel can go forever, but by
+    summing the geometric series, there is an exact solution.
+    """
+    # https://en.wikipedia.org/wiki/Geometric_series
+    # The "common ratio" is the probability of everyone missing
+    common_ratio = (F(1) - a_accuracy) * (F(1) - b_accuracy)
+    return F(a_accuracy, (1 - common_ratio))
+
+c_vs_a = infinite_duels(players['c'], players['a'])
+b_vs_c = infinite_duels(players['b'], players['c'])
+c_vs_b = infinite_duels(players['c'], players['b'])
+
 p = {
-    "ca": a([F(1, 2), 0, F(1, 2)]),
-    "bc": a([0, F(8, 9), F(1, 9)]),
-    "cb": a([0, F(4, 9), F(5, 9)]),
+    "ca": a([F(1) - c_vs_a, 0, c_vs_a]),
+    "bc": a([0, b_vs_c, F(1) - b_vs_c]),
+    "cb": a([0, F(1) - c_vs_b, c_vs_b]),
     # a always hits target: b, regardless of order
     "a": ((F(1), "ca"),),
     # b always shoots at a
