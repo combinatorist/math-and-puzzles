@@ -1,31 +1,48 @@
 from fractions import Fraction as F
 from numpy import array as a
 import numpy as np
+from functools import reduce
+from operator import mul
+
+def miss(accuracy):
+    return F(1) - accuracy
+
+class Player:
+
+    def __init__(self, accuracy):
+        self.hit = accuracy
+        self.miss = miss(self.hit)
 
 players = {
-    'a': F(1),
-    'b': F(4, 5),
-    'c': F(1, 2),
+    'a': Player(F(1)),
+    'b': Player(F(4, 5)),
+    'c': Player(F(1, 2)),
 }
 
-def infinite_duels(a_accuracy, b_accuracy):
-    """defines probability of survival for 'a' given their's and b's accuracy
-    If neither person has perfect accuracy the duel can go forever, but by
-    summing the geometric series, there is an exact solution.
+def duel(order):
+    """Probability of success for each player given everyone's accuracy.
+    If no person has perfect accuracy, attempts may go on forever, but by
+    summing the geometric series, there is an exact probability.
     """
     # https://en.wikipedia.org/wiki/Geometric_series
     # The "common ratio" is the probability of everyone missing
-    common_ratio = (F(1) - a_accuracy) * (F(1) - b_accuracy)
-    return F(a_accuracy, (1 - common_ratio))
+    common_ratio = reduce(mul, [a.miss for a in order])
+    success_probabilities = []
+    cumulative_miss = F(1)
+    for player in order:
+        numerator = player.hit * cumulative_miss
+        success_probabilities.append(F(numerator / (1 - common_ratio)))
+        cumulative_miss = cumulative_miss * player.miss
+    return success_probabilities
 
-c_vs_a = infinite_duels(players['c'], players['a'])
-b_vs_c = infinite_duels(players['b'], players['c'])
-c_vs_b = infinite_duels(players['c'], players['b'])
+c_vs_a = duel((players['c'], players['a']))
+b_vs_c = duel((players['b'], players['c']))
+c_vs_b = duel((players['c'], players['b']))
 
 p = {
-    "ca": a([F(1) - c_vs_a, 0, c_vs_a]),
-    "bc": a([0, b_vs_c, F(1) - b_vs_c]),
-    "cb": a([0, F(1) - c_vs_b, c_vs_b]),
+    "ca": a([F(1) - c_vs_a[0], 0, c_vs_a[0]]),
+    "bc": a([0, b_vs_c[0], F(1) - b_vs_c[0]]),
+    "cb": a([0, F(1) - c_vs_b[0], c_vs_b[0]]),
     # a always hits target: b, regardless of order
     "a": ((F(1), "ca"),),
     # b always shoots at a
