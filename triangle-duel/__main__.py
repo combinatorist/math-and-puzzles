@@ -3,6 +3,7 @@ from numpy import array as a
 import numpy as np
 from functools import reduce
 from operator import mul
+from itertools import permutations
 
 def miss(accuracy):
     return F(1) - accuracy
@@ -35,41 +36,57 @@ def duel(order):
         cumulative_miss = cumulative_miss * player.miss
     return success_probabilities
 
-c_vs_a = duel((players['c'], players['a']))
-b_vs_c = duel((players['b'], players['c']))
-c_vs_b = duel((players['c'], players['b']))
-
-p = {
-    "ca": a([F(1) - c_vs_a[0], 0, c_vs_a[0]]),
-    "bc": a([0, b_vs_c[0], F(1) - b_vs_c[0]]),
-    "cb": a([0, F(1) - c_vs_b[0], c_vs_b[0]]),
+strategies = {
+    # each pair always aims at their opponent
+    "ca": "ac",
+    "bc": "cb",
+    "cb": "bc",
     # a always hits target: b, regardless of order
-    "abc": ((F(1), "ca"),),
-    "acb": ((F(1), "ca"),),
+    "abc": "ba_",
+    "acb": "b_a",
     # b always shoots at a
-    "bac": ((F(4, 5), "cb"), (F(1, 5), "acb")),
-    "bca": ((F(4, 5), "cb"), (F(1, 5), "cab")),
+    "bac": "ab_",
+    "bca": "a_b",
     # c always shoots into air, hitting no-one
-    "cab": ((F(1), "abc"),),
-    "cba": ((F(1), "bac"),),
-    "start": (
-        (F(1, 6), "abc"),
-        (F(1, 6), "acb"),
-        (F(1, 6), "bac"),
-        (F(1, 6), "cab"),
-        (F(1, 6), "bca"),
-        (F(1, 6), "cba"),
-    )
+    "cab": "_ba",
+    "cba": "_ab",
 }
 
-def compute(entry_point_ref):
+def eliminate(order, shooter, target):
+    """shows next states after a player's been eliminated
+    """
+    if target == '_':
+        return order
+    else:
+        next_shooter_index = order.index(shooter) + 1
+        reorder = (2 * order)[next_shooter_index:][:len(order)]
+        return ''.join(reorder.replace(target,'')) # expects and returns a string
+
+def compute(name_order):
     """computes probability for each (A, B, C) to be last survivor
     """
-    entry_point = p[entry_point_ref]
-    if isinstance(entry_point, np.ndarray):
-        return entry_point
-    else:
-        results = [compute(pair[1]) * pair[0] for pair in entry_point]
+    if len(name_order) == 1:
+        player_index = sorted(players.keys()).index(name_order[0])
+        array = np.zeros(len(players), dtype = F)
+        array[player_index] = F(1)
+        return array
+
+    order = [players[name] for name in name_order]
+    targets = strategies[name_order]
+
+    # '_' is interpretted as player passing (no target)
+    for i in range(len(name_order)):
+        if targets[i] == "_":
+            # so, they are masked with a 0 accuracy player
+            order[i] = Player(0)
+
+    success_probabilities = duel(order)
+    triples = zip(success_probabilities, name_order, targets)
+    results = [
+            t[0] * compute(eliminate(name_order, t[1], t[2]))
+            for t in triples
+            if t[2] != '_' # drop players who pass
+        ]
 
     return np.asarray(results).sum(axis=0)
 
@@ -79,6 +96,10 @@ compute("bc")
 compute("cb")
 compute("abc")
 compute("bac")
-print compute("start")
-print [float(x) for x in compute("start")]
-assert compute("start").sum() == 1
+
+starts = [''.join(a) for a in permutations(''.join(players.keys()))]
+result = F(1, len(starts)) * np.asarray([compute(start) for start in starts]).sum(axis=0)
+print result
+print [float(x) for x in result]
+assert result.sum() == 1
+assert eliminate("ca", "c", "a") == "c"
