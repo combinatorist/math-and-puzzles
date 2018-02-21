@@ -3,7 +3,7 @@ from numpy import array as a
 import numpy as np
 from functools import reduce
 from operator import mul
-from itertools import permutations
+from itertools import permutations, product
 
 def miss(accuracy):
     return F(1) - accuracy
@@ -37,19 +37,6 @@ def duel(order):
     return success_probabilities
 
 strategies = {
-    # each pair always aims at their opponent
-    "ca": "ac",
-    "bc": "cb",
-    "cb": "bc",
-    # a always hits target: b, regardless of order
-    "abc": "ba_",
-    "acb": "b_a",
-    # b always shoots at a
-    "bac": "ab_",
-    "bca": "a_b",
-    # c always shoots into air, hitting no-one
-    "cab": "_ba",
-    "cba": "_ab",
 }
 
 def eliminate(order, shooter, target):
@@ -62,6 +49,20 @@ def eliminate(order, shooter, target):
         reorder = (2 * order)[next_shooter_index:][:len(order)]
         return ''.join(reorder.replace(target,'')) # expects and returns a string
 
+def strategize(name_order):
+    """Determines and saves optimal strategy in dictionary
+    """
+    if name_order in strategies:
+        return strategies[name_order][0]
+    else:
+        strats = [
+            ''.join(a)
+            for a in product(name_order + "_", repeat=len(name_order))
+        ]
+
+    # compute best strategy from all possibilities
+    pass
+
 def compute(name_order):
     """computes probability for each (A, B, C) to be last survivor
     """
@@ -72,7 +73,7 @@ def compute(name_order):
         return array
 
     order = [players[name] for name in name_order]
-    targets = strategies[name_order]
+    targets = strategize(name_order)
 
     # '_' is interpretted as player passing (no target)
     for i in range(len(name_order)):
